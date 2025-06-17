@@ -1,0 +1,205 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>```
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visita Fácil - Agendamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .logo-text {
+            background: linear-gradient(90deg, #3b82f6 50%, #f97316 50%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+        }
+        .calendar-day {
+            @apply w-10 h-10 flex items-center justify-center border rounded-full;
+        }
+        .calendar-day.weekend {
+            @apply bg-red-500 text-white;
+        }
+        .calendar-day.selected {
+            @apply bg-blue-500 text-white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="w-full max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg border-2 border-blue-500">
+        <header class="flex justify-between items-center mb-6 border-b-2 border-blue-500 pb-4">
+            <div>
+                <h1 class="text-3xl logo-text">Visita <span>Fácil</span></h1>
+                <p class="text-gray-600">Agendamento</p>
+            </div>
+            <div class="space-x-4">
+                <a href="index.html" class="text-blue-600 hover:underline">Login</a>
+                <a href="cadastro.html" class="text-blue-600 hover:underline">Cadastro</a>
+                <a href="#" class="text-blue-600 hover:underline">Sair</a>
+                <span class="text-blue-600 cursor-pointer">👤</span>
+            </div>
+        </header>
+        <div class="flex flex-col md:flex-row gap-6">
+            <div class="w-full md:w-1/2 p-4 border-2 border-blue-500 rounded-lg">
+                <h2 class="text-xl text-blue-700 mb-4">Calendário</h2>
+                <div class="flex justify-between mb-2">
+                    <button class="text-blue-600"><</button>
+                    <span class="text-lg font-semibold">MAIO</span>
+                    <button class="text-blue-600">></button>
+                </div>
+                <div class="grid grid-cols-7 gap-1">
+                    <div class="text-center font-semibold">S</div>
+                    <div class="text-center font-semibold">M</div>
+                    <div class="text-center font-semibold">T</div>
+                    <div class="text-center font-semibold">W</div>
+                    <div class="text-center font-semibold">T</div>
+                    <div class="text-center font-semibold">F</div>
+                    <div class="text-center font-semibold">Sa</div>
+                    <div class="calendar-day weekend">27</div>
+                    <div class="calendar-day weekend">28</div>
+                    <div class="calendar-day weekend">29</div>
+                    <div class="calendar-day weekend">30</div>
+                    <div class="calendar-day">1</div>
+                    <div class="calendar-day">2</div>
+                    <div class="calendar-day">3</div>
+                    <div class="calendar-day">4</div>
+                    <div class="calendar-day selected">5</div>
+                    <div class="calendar-day">6</div>
+                    <div class="calendar-day">7</div>
+                    <div class="calendar-day">8</div>
+                    <div class="calendar-day">9</div>
+                    <div class="calendar-day">10</div>
+                    <div class="calendar-day">11</div>
+                    <div class="calendar-day">12</div>
+                    <div class="calendar-day">13</div>
+                    <div class="calendar-day">14</div>
+                    <div class="calendar-day">15</div>
+                    <div class="calendar-day">16</div>
+                    <div class="calendar-day">17</div>
+                    <div class="calendar-day weekend">18</div>
+                    <div class="calendar-day">19</div>
+                    <div class="calendar-day">20</div>
+                    <div class="calendar-day">21</div>
+                    <div class="calendar-day">22</div>
+                    <div class="calendar-day">23</div>
+                    <div class="calendar-day">24</div>
+                    <div class="calendar-day weekend">25</div>
+                    <div class="calendar-day">26</div>
+                    <div class="calendar-day">27</div>
+                    <div class="calendar-day">28</div>
+                    <div class="calendar-day">29</div>
+                    <div class="calendar-day">30</div>
+                    <div class="calendar-day">31</div>
+                    <div class="calendar-day weekend">1</div>
+                    <div class="calendar-day">2</div>
+                    <div class="calendar-day">3</div>
+                    <div class="calendar-day">4</div>
+                    <div class="calendar-day">5</div>
+                    <div class="calendar-day">6</div>
+                    <div class="calendar-day">7</div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 p-4 border-2 border-blue-500 rounded-lg">
+                <h2 class="text-xl text-blue-700 mb-4">Dados do Agendamento</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="unidade-penal" class="block text-gray-700">Unidade Penal</label>
+                        <input type="text" id="unidade-penal" value="Estabelecimento Penal Feminino Irmã Irma Zorzi - EPFIZ (Campo Grande)" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-200" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Nome</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center"><input type="radio" name="familiar" class="mr-2"> Laura Isabela Moraes - RGI 145236 - Esposa</label>
+                            <label class="flex items-center"><input type="radio" name="familiar" class="mr-2"> Ana Valentina Moraes - RGI 145326 - Cunhada</label>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <span class="w-16">08h00</span>
+                            <input type="checkbox" class="ml-2 mr-2">
+                            <span class="text-green-600">Disponível</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-16">09h00</span>
+                            <input type="checkbox" class="ml-2 mr-2" disabled>
+                            <span class="text-gray-500">Indisponível</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-16">10h00</span>
+                            <input type="checkbox" class="ml-2 mr-2" disabled>
+                            <span class="text-gray-500">Indisponível</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-16">11h00</span>
+                            <input type="checkbox" class="ml-2 mr-2" disabled>
+                            <span class="text-gray-500">Indisponível</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-16">13h00</span>
+                            <input type="checkbox" class="ml-2 mr-2">
+                            <span class="text-green-600">Disponível</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-16">14h00</span>
+                            <input type="checkbox" class="ml-2 mr-2" disabled>
+                            <span class="text-gray-500">Indisponível</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-16">15h00</span>
+                            <input type="checkbox" class="ml-2 mr-2" disabled>
+                            <span class="text-gray-500">Indisponível</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-16">16h00</span>
+                            <input type="checkbox" class="ml-2 mr-2">
+                            <span class="text-green-600">Disponível</span>
+                        </div>
+                    </div>
+                    <button class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 mt-4">
+                        Agendar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
